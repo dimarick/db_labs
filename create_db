@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker-compose up -d db && \
+cat schema/035_9.utf8.sql | docker-compose run psql
