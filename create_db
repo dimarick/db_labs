@@ -1,4 +1,6 @@
 #!/bin/bash
 
 docker-compose up -d db && \
-cat schema/035_9.utf8.sql | docker-compose run psql
+cat lr2/schema.sql | docker-compose run psql && \
+cat lr4/schema.sql | docker-compose run psql && \
+cat lr5/schema_tovar.sql | docker-compose run psql && \

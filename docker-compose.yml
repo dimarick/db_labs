@@ -3,15 +3,16 @@ version: '3.9'
 
 services:
   db:
-    hostname: lab.db.docker
+    hostname: db.docker
+    container_name: postgres-lab4
     image: postgres:16
     restart: always
     shm_size: 128mb
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-        - "9433:5432"
+        - "10432:5432"
 
   psql:
     image: postgres:16
-    command: psql -v ON_ERROR_STOP=1 --host=lab.db.docker --user=postgres --no-password
+    command: psql -v ON_ERROR_STOP=1 --host=db.docker --user=postgres --no-password
