@@ -112,3 +112,22 @@ end;
 $$ language plpgsql immutable;
 
 select double_coalesce(-1.2, 42.0, 43.0), double_coalesce(2.4, 42.0, 43.0);
+
+-- 1. Создайте генератор для генерирования первичных ключей в таблице “космические тела”,
+-- установите его значение таким образом, чтобы гарантировать уникальность первичных ключей.
+-- Вставьте в таблицу “космические тела” информацию о спутниках Марса - "Фобосе" и "Деймосе" с использованием генератора. (простой)
+
+create sequence heavenly_body_id_seq;
+select setval('heavenly_body_id_seq', (select  max(heavenly_body.num_heavenly_body) from heavenly_body), true);
+alter table heavenly_body alter column num_heavenly_body set default nextval('heavenly_body_id_seq');
+insert into heavenly_body(name_heavenly_body, satellite)
+values
+    ('Марс', 1);
+
+insert into heavenly_body(name_heavenly_body, satellite)
+values
+    ('Фобос', (select num_heavenly_body from heavenly_body where name_heavenly_body = 'Марс')),
+    ('Деймос', (select num_heavenly_body from heavenly_body where name_heavenly_body = 'Марс'));
+
+-- 2. Создайте генератор, и с его помощью перенумеруйте строки результата выполнения первого запроса. (стандартный)
+select *, row_number() over () from heavenly_body
