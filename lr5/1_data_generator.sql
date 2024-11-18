@@ -45,7 +45,7 @@ insert into contractors_phones(phone_id, contractor_id)
 with free_phones as (
     select *, row_number() over () as n
     from phones
-    left join public.contractors_phones cp on phones.id = cp.phone_id
+    left join products.contractors_phones cp on phones.id = cp.phone_id
     where contractor_id is null order by random()
 ),
 random_contractors as (
@@ -68,7 +68,7 @@ insert into contractors_phones(phone_id, contractor_id)
 with free_phones as (
     select *, row_number() over () as n
     from phones
-    left join public.contractors_phones cp on phones.id = cp.phone_id
+    left join products.contractors_phones cp on phones.id = cp.phone_id
     where contractor_id is null order by random()
 ),
 random_contractors as (
@@ -129,22 +129,30 @@ from (select i, random() as r1, random() as r2 from generate_series(1, 100) n(i)
 inner join count_groups on true
 left join groups on groups.n = (rand.r1 * count_groups.c)::int + 1
 
-insert into operations(date, price, quantity, flags, contractor_id)
+insert into operations(date, price, quantity, flags, contractor_id, product_id)
 with
     random_contractors as (
         select *, row_number() over () as n
         from contractors order by random()
     ),
-    count_contractors as (select count(*) - 1 as c from random_contractors)
+    count_contractors as (select count(*) - 1 as c from random_contractors),
+    random_products as (
+        select *, row_number() over () as n
+        from products order by random()
+    ),
+    count_products as (select count(*) - 1 as c from random_products)
 select
     '2024-01-01 00:00'::timestamp + interval '1 second' * (r1 * 366 * 24 * 3600) as date,
     1 + (r2 * 10000)::numeric(10, 2) as price,
     1 + (r2 * 10)::int as quantity,
     (random() * 3)::int as flags,
-    random_contractors.id as contractor_id
+    random_contractors.id as contractor_id,
+    random_products.id as product_id
 from (select i, random() as r1, random() as r2 from generate_series(1, 100) n(i)) rand
 inner join count_contractors on true
+inner join count_products on true
 left join random_contractors on random_contractors.n = (rand.r1 * count_contractors.c)::int + 1
+left join random_products on random_products.n = (rand.r1 * count_products.c)::int + 1;
 
 insert into payments(sum, date, contractor_id)
 with

@@ -1,4 +1,4 @@
-create schema products;
+create schema if not exists products;
 
 create table products.contractors (
     id serial not null primary key,
@@ -63,7 +63,7 @@ create table products.products (
     article text not null,
     manufacturer text,
     group_id int not null,
-    foreign key (group_id) references product_groups(id) on delete restrict on update restrict
+    foreign key (group_id) references products.product_groups(id) on delete restrict on update restrict
 );
 
 create index products_group_id on products.products(group_id);
@@ -80,7 +80,9 @@ create table products.operations (
     quantity int not null,
     flags int not null,
     contractor_id int not null,
-    foreign key (contractor_id) references contractors(id) on delete restrict on update restrict,
+    product_id int not null,
+    foreign key (contractor_id) references products.contractors(id) on delete restrict on update restrict,
+    foreign key (product_id) references products.products(id) on delete restrict on update restrict,
     check ( price > 0 and quantity > 0 )
 );
 
@@ -95,7 +97,7 @@ create table products.payments (
     sum numeric(10, 2),
     date timestamp not null,
     contractor_id int not null,
-    foreign key (contractor_id) references contractors(id) on delete restrict on update restrict,
+    foreign key (contractor_id) references products.contractors(id) on delete restrict on update restrict,
     check ( sum > 0 )
 );
 

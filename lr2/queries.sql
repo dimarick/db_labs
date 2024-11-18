@@ -22,7 +22,7 @@ select * from space_vehicle where space_vehicle.num_space_vehicle <= 114;
 select * from cosmodrome where latitude < 5 and latitude > -5 and cosmodrome.year_open > 1960;
 
 -- 7. Выдать список уникальных номеров ракет-носителей использованных для запуска КА.
-select carrier_rocket.num_carrier_rocket from carrier_rocket;
+select distinct carrier_rocket.num_carrier_rocket from carrier_rocket;
 
 -- 8. Найти все возможные комбинации информации о РН и типах КА.
 select * from carrier_rocket
@@ -44,7 +44,7 @@ insert into space_vehicle
      sequence_number,
      international_designation,
      weight_space_vehicle)
-VALUES
+values
     (53,
      1,
      1,
