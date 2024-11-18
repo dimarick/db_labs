@@ -112,6 +112,27 @@ create policy people_access_role2 on people for select to role2, user4 using (nu
 
 -- 8. Реализовать вариант многоуровневой зашиты для примера 035 модели.
 
+grant select, insert, update on space_flight to user1, user2, user3;
+grant delete on space_flight to user1;
+grant references on space_flight to user1, user2;
+
+grant select, insert, update, delete, references on status to user1;
+grant select on status to user2;
+grant references on status to user2, user3;
+
+grant select, insert, update, delete, references on astronaut to user1;
+grant select, insert, update on astronaut to user3;
+grant select, references on astronaut to user2;
+
+grant select, insert, update, delete, references on people to user1;
+grant select, references on people to user2;
+
+grant select, insert, update, delete, references on animal to user1;
+grant select on animal to user2;
+grant select, insert, update on animal to user3;
+
+-- 9. Реализовать вариант многоуровневой зашиты для примера 035 модели.
+
 create role data_read nologin;
 create role data_add nologin;
 create role data_write nologin;
